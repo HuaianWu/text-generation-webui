@@ -21,15 +21,15 @@ import tqdm
 from requests.adapters import HTTPAdapter
 from tqdm.contrib.concurrent import thread_map
 
-base = "https://huggingface.co"
+base = "https://hf-mirror.com"
 
 
 class ModelDownloader:
     def __init__(self, max_retries=5):
         self.session = requests.Session()
         if max_retries:
-            self.session.mount('https://cdn-lfs.huggingface.co', HTTPAdapter(max_retries=max_retries))
-            self.session.mount('https://huggingface.co', HTTPAdapter(max_retries=max_retries))
+            self.session.mount('https://cdn-lfs.hf-mirror.com', HTTPAdapter(max_retries=max_retries))
+            self.session.mount('https://hf-mirror.com', HTTPAdapter(max_retries=max_retries))
         if os.getenv('HF_USER') is not None and os.getenv('HF_PASS') is not None:
             self.session.auth = (os.getenv('HF_USER'), os.getenv('HF_PASS'))
         if os.getenv('HF_TOKEN') is not None:
@@ -98,12 +98,12 @@ class ModelDownloader:
                         sha256.append([fname, dict[i]['lfs']['oid']])
 
                     if is_text:
-                        links.append(f"https://huggingface.co/{model}/resolve/{branch}/{fname}")
+                        links.append(f"https://hf-mirror.com/{model}/resolve/{branch}/{fname}")
                         classifications.append('text')
                         continue
 
                     if not text_only:
-                        links.append(f"https://huggingface.co/{model}/resolve/{branch}/{fname}")
+                        links.append(f"https://hf-mirror.com/{model}/resolve/{branch}/{fname}")
                         if is_safetensors:
                             has_safetensors = True
                             classifications.append('safetensors')
@@ -218,7 +218,7 @@ class ModelDownloader:
         output_folder.mkdir(parents=True, exist_ok=True)
 
         if not is_llamacpp:
-            metadata = f'url: https://huggingface.co/{model}\n' \
+            metadata = f'url: https://hf-mirror.com/{model}\n' \
                        f'branch: {branch}\n' \
                        f'download date: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n'
 
